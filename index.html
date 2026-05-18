@@ -41,6 +41,142 @@
     .chart-bar { transform-origin: bottom; animation: growBar 0.5s ease-out forwards; }
     @keyframes fadeSlideIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
     .fade-in { animation: fadeSlideIn 0.25s ease-out forwards; }
+
+    /* ── Embedded Flag Panel ── */
+    #ft-panel {
+      position: fixed; z-index: 2147483647;
+      width: 380px; top: 72px; right: 20px;
+      background: #18181b; color: #fff7ed;
+      font: 13px 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      border: 1px solid #3f3f46;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.6), 0 2px 8px rgba(0,0,0,0.3);
+      display: none; flex-direction: column;
+      user-select: none;
+    }
+    #ft-panel.open { display: flex; }
+    #ft-panel header {
+      display: flex; align-items: stretch; height: 40px;
+      border-bottom: 1px solid #3f3f46; cursor: move; flex-shrink: 0;
+    }
+    #ft-panel .ft-title {
+      flex: 1; display: flex; align-items: center; gap: 8px;
+      padding: 0 12px; font-size: 12px; font-weight: 600;
+    }
+    #ft-panel .ft-title .ft-badge {
+      font-size: 10px; font-weight: 700;
+      background: rgba(251,146,60,0.15); color: #fb923c;
+      border: 1px solid rgba(251,146,60,0.3);
+      padding: 1px 6px; display: none;
+    }
+    #ft-panel .ft-title .ft-badge.visible { display: inline; }
+    #ft-panel .ft-close-btn {
+      width: 40px; background: transparent; border: 0;
+      border-left: 1px solid #3f3f46; color: #a1a1aa;
+      cursor: pointer; font-size: 14px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    #ft-panel .ft-close-btn:hover { background: #27272a; color: #fff7ed; }
+    #ft-panel .ft-desc {
+      padding: 10px 12px; border-bottom: 1px solid #3f3f46;
+      background: #27272a; font-size: 11px; color: #a1a1aa; line-height: 1.5; flex-shrink: 0;
+    }
+    #ft-panel .ft-presets {
+      display: flex; align-items: center; gap: 6px;
+      height: 40px; padding: 0 12px;
+      border-bottom: 1px solid #3f3f46; background: #27272a; flex-shrink: 0;
+    }
+    #ft-panel .ft-preset-label {
+      font-size: 10px; color: #a1a1aa; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.06em; flex-shrink: 0;
+    }
+    #ft-panel .ft-preset-btn {
+      border: 1px solid #3f3f46; background: #18181b;
+      height: 26px; padding: 0 10px; margin-left: -1px;
+      font: 11px 'Inter', sans-serif; font-weight: 500;
+      color: #a1a1aa; cursor: pointer;
+    }
+    #ft-panel .ft-preset-btn:first-of-type { margin-left: 0; }
+    #ft-panel .ft-preset-btn:hover:not(.active) { background: #3f3f46; color: #fff7ed; }
+    #ft-panel .ft-preset-btn.active {
+      background: #27272a; border-color: #fb923c; color: #fb923c; font-weight: 600; z-index: 1; position: relative;
+    }
+    #ft-panel .ft-filter-row {
+      display: flex; align-items: center; justify-content: space-between;
+      height: 40px; padding: 0 12px; border-bottom: 1px solid #3f3f46; flex-shrink: 0;
+    }
+    #ft-panel .ft-filter-row label { font-size: 12px; color: #a1a1aa; cursor: pointer; font-weight: 500; }
+    #ft-panel .ft-override-count {
+      font-size: 10px; font-weight: 700;
+      background: rgba(251,146,60,0.15); color: #fb923c;
+      border: 1px solid rgba(251,146,60,0.3);
+      padding: 2px 7px;
+    }
+    #ft-panel .ft-override-count.none {
+      background: #27272a; color: #a1a1aa; border-color: #3f3f46;
+    }
+    #ft-panel .ft-toggle { position: relative; display: inline-block; width: 36px; height: 20px; flex-shrink: 0; }
+    #ft-panel .ft-toggle input { opacity: 0; width: 0; height: 0; position: absolute; }
+    #ft-panel .ft-toggle-track {
+      position: absolute; inset: 0; background: #3f3f46;
+      border-radius: 9999px; transition: background 0.18s; cursor: pointer;
+    }
+    #ft-panel .ft-toggle-track::after {
+      content: ''; position: absolute; width: 16px; height: 16px;
+      background: #fff7ed; border-radius: 9999px; top: 2px; left: 2px;
+      transition: transform 0.18s; box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+    }
+    #ft-panel .ft-toggle input:checked + .ft-toggle-track { background: #fb923c; }
+    #ft-panel .ft-toggle input:checked + .ft-toggle-track::after { transform: translateX(16px); }
+    #ft-panel .ft-search-wrap { position: relative; border-bottom: 1px solid #3f3f46; flex-shrink: 0; }
+    #ft-panel .ft-search-icon {
+      position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+      color: #a1a1aa; pointer-events: none;
+    }
+    #ft-panel .ft-search-wrap input {
+      width: 100%; height: 40px; padding: 0 12px 0 36px;
+      font: 12px 'Inter', sans-serif; border: 0; outline: none;
+      box-sizing: border-box; color: #fff7ed; background: #18181b;
+    }
+    #ft-panel .ft-search-wrap input::placeholder { color: #a1a1aa; }
+    #ft-panel .ft-search-wrap input:focus { box-shadow: inset 0 -2px 0 #fb923c; }
+    #ft-panel .ft-list { overflow-y: auto; max-height: 260px; }
+    #ft-panel .ft-row {
+      display: flex; align-items: stretch; height: 40px;
+      border-bottom: 1px solid #3f3f46;
+    }
+    #ft-panel .ft-row:last-child { border-bottom: 0; }
+    #ft-panel .ft-flag-name {
+      flex: 1; min-width: 0; display: flex; align-items: center; padding: 0 12px;
+    }
+    #ft-panel .ft-flag-name code {
+      font-family: ui-monospace, 'SF Mono', Menlo, monospace; font-size: 11px;
+      color: #e4e4e7; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+    #ft-panel .ft-seg { display: flex; align-items: stretch; flex-shrink: 0; }
+    #ft-panel .ft-seg-btn {
+      width: 44px; display: flex; align-items: center; justify-content: center;
+      background: #27272a; color: #a1a1aa;
+      border: 0; border-left: 1px solid #3f3f46;
+      font: 11px 'Inter', sans-serif; font-weight: 500; cursor: pointer;
+    }
+    #ft-panel .ft-seg-btn:hover:not(.on) { background: #3f3f46; color: #fff7ed; }
+    #ft-panel .ft-seg-btn.on { background: rgba(251,146,60,0.15); color: #fb923c; font-weight: 700; }
+    #ft-panel .ft-empty { color: #a1a1aa; font-size: 12px; padding: 20px 12px; text-align: center; }
+    #ft-panel footer { display: flex; flex-direction: column; border-top: 1px solid #3f3f46; flex-shrink: 0; }
+    #ft-panel .ft-discard-btn {
+      height: 40px; width: 100%; font: 12px 'Inter', sans-serif; font-weight: 600;
+      cursor: pointer; border: 0; border-bottom: 1px solid rgba(239,68,68,0.2);
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(239,68,68,0.08); color: #f87171;
+    }
+    #ft-panel .ft-discard-btn:hover { background: rgba(239,68,68,0.15); }
+    /* Trigger button pulse on override */
+    @keyframes pulseRing {
+      0%   { box-shadow: 0 0 0 0 rgba(251,146,60,0.5); }
+      70%  { box-shadow: 0 0 0 6px rgba(251,146,60,0); }
+      100% { box-shadow: 0 0 0 0 rgba(251,146,60,0); }
+    }
+    #ft-trigger.has-overrides { animation: pulseRing 2s ease infinite; }
   </style>
 </head>
 <body class="bg-gray-50 text-gray-900 dark:bg-brand-bg dark:text-brand-text font-sans transition-colors duration-300 h-screen overflow-hidden flex flex-col">
@@ -84,7 +220,7 @@
           <span class="ml-auto flag-tag bg-orange-500/10 text-orange-500 dark:text-orange-400 border border-orange-500/20">audit-log</span>
         </a>
         <a href="#" class="nav-item flex items-center gap-3 px-3 py-2 rounded-md text-sm text-gray-500 dark:text-brand-muted hover:bg-gray-100 dark:hover:bg-brand-border hover:text-gray-900 dark:hover:text-brand-text">
-          <svg class="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          <svg class="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
           Settings
         </a>
       </nav>
@@ -104,13 +240,13 @@
       <div class="w-8 h-8 bg-brand rounded-md flex items-center justify-center mb-2">
         <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 16 16"><path d="M1 1h6v6H1zm8 0h6v6H9zM1 9h6v6H1zm8 0h6v6H9z"/></svg>
       </div>
-      <button title="Dashboard" class="w-9 h-9 rounded-md flex items-center justify-center bg-gray-100 dark:bg-brand-border text-gray-700 dark:text-brand-text">
+      <button class="w-9 h-9 rounded-md flex items-center justify-center bg-gray-100 dark:bg-brand-border text-gray-700 dark:text-brand-text">
         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
       </button>
-      <button title="Analytics" class="w-9 h-9 rounded-md flex items-center justify-center text-gray-400 dark:text-brand-muted hover:bg-gray-100 dark:hover:bg-brand-border">
+      <button class="w-9 h-9 rounded-md flex items-center justify-center text-gray-400 dark:text-brand-muted hover:bg-gray-100 dark:hover:bg-brand-border">
         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
       </button>
-      <button title="Settings" class="w-9 h-9 rounded-md flex items-center justify-center text-gray-400 dark:text-brand-muted hover:bg-gray-100 dark:hover:bg-brand-border mt-auto">
+      <button class="w-9 h-9 rounded-md flex items-center justify-center text-gray-400 dark:text-brand-muted hover:bg-gray-100 dark:hover:bg-brand-border mt-auto">
         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
       </button>
       <span class="flag-tag bg-orange-500/10 text-orange-400 border border-orange-500/20 mt-1" style="writing-mode:vertical-rl;transform:rotate(180deg)">new-navigation</span>
@@ -124,9 +260,7 @@
         <!-- Org Switcher -->
         <div id="section-org-switcher" class="hidden items-center gap-2">
           <select class="text-xs font-medium border border-gray-200 dark:border-brand-border bg-white dark:bg-brand-bg text-gray-700 dark:text-brand-muted rounded px-2 py-1.5 outline-none cursor-pointer focus:border-brand">
-            <option>Acme Corp</option>
-            <option>Beta Inc</option>
-            <option>Demo Workspace</option>
+            <option>Acme Corp</option><option>Beta Inc</option><option>Demo Workspace</option>
           </select>
           <span class="flag-tag bg-orange-500/10 text-orange-500 dark:text-orange-400 border border-orange-500/20">multi-tenant</span>
         </div>
@@ -136,10 +270,10 @@
         <!-- Team Avatars -->
         <div id="section-team-avatars" class="hidden items-center gap-2">
           <div class="flex -space-x-2">
-            <div title="Jamie L." class="w-7 h-7 rounded-full bg-sky-500 border-2 border-white dark:border-brand-bg-2 flex items-center justify-center text-[9px] font-bold text-white cursor-pointer">JL</div>
-            <div title="Morgan K." class="w-7 h-7 rounded-full bg-violet-500 border-2 border-white dark:border-brand-bg-2 flex items-center justify-center text-[9px] font-bold text-white cursor-pointer">MK</div>
-            <div title="Alex R." class="w-7 h-7 rounded-full bg-emerald-500 border-2 border-white dark:border-brand-bg-2 flex items-center justify-center text-[9px] font-bold text-white cursor-pointer">AR</div>
-            <div class="w-7 h-7 rounded-full bg-gray-200 dark:bg-brand-border border-2 border-white dark:border-brand-bg-2 flex items-center justify-center text-[9px] font-semibold text-gray-500 dark:text-brand-muted">+4</div>
+            <div class="w-7 h-7 rounded-full bg-sky-500 border-2 border-white dark:border-brand-bg-2 flex items-center justify-center text-[9px] font-bold text-white">JL</div>
+            <div class="w-7 h-7 rounded-full bg-violet-500 border-2 border-white dark:border-brand-bg-2 flex items-center justify-center text-[9px] font-bold text-white">MK</div>
+            <div class="w-7 h-7 rounded-full bg-emerald-500 border-2 border-white dark:border-brand-bg-2 flex items-center justify-center text-[9px] font-bold text-white">AR</div>
+            <div class="w-7 h-7 rounded-full bg-gray-200 dark:bg-brand-border border-2 border-white dark:border-brand-bg-2 flex items-center justify-center text-[9px] font-semibold text-gray-500">+4</div>
           </div>
           <span class="flag-tag bg-orange-500/10 text-orange-500 dark:text-orange-400 border border-orange-500/20">collaboration-tools</span>
         </div>
@@ -148,7 +282,7 @@
         <button id="notif-v1" class="w-8 h-8 rounded-md flex items-center justify-center text-gray-400 dark:text-brand-muted hover:bg-gray-100 dark:hover:bg-brand-border transition-colors">
           <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
         </button>
-        <!-- Notifications v2 (with badge) -->
+        <!-- Notifications v2 -->
         <button id="notif-v2" class="hidden w-8 h-8 rounded-md items-center justify-center text-gray-400 dark:text-brand-muted hover:bg-gray-100 dark:hover:bg-brand-border relative transition-colors">
           <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
           <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-brand rounded-full border border-white dark:border-brand-bg-2"></span>
@@ -157,8 +291,17 @@
 
         <div class="w-px h-6 bg-gray-200 dark:bg-brand-border"></div>
 
-        <!-- User avatar -->
-        <div class="w-8 h-8 rounded-full bg-brand flex items-center justify-center text-[11px] font-bold text-brand-bg cursor-pointer select-none" title="Denis D.">DD</div>
+        <!-- ── Flag Panel Trigger ── -->
+        <button id="ft-trigger" onclick="togglePanel()"
+          class="flex items-center gap-2 h-8 px-3 rounded-md border border-gray-200 dark:border-brand-border bg-white dark:bg-brand-bg-2 text-gray-600 dark:text-brand-muted text-xs font-semibold hover:border-brand hover:text-brand transition-colors">
+          <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h7"/><circle cx="19" cy="18" r="3"/><path d="M19 15v1M19 21v1M22 18h-1M17 18h-1M21.1 15.9l-.7.7M18.3 18.7l-.7.7M21.1 20.1l-.7-.7M18.3 17.3l-.7-.7"/></svg>
+          <span id="ft-trigger-label">Flags</span>
+          <span id="ft-trigger-count" class="hidden min-w-[18px] h-[18px] flex items-center justify-center text-[9px] font-bold bg-brand text-brand-bg rounded-full px-1">0</span>
+        </button>
+
+        <div class="w-px h-6 bg-gray-200 dark:bg-brand-border"></div>
+
+        <div class="w-8 h-8 rounded-full bg-brand flex items-center justify-center text-[11px] font-bold text-brand-bg cursor-pointer select-none">DD</div>
       </header>
 
       <!-- Content -->
@@ -172,7 +315,6 @@
           </div>
           <div class="flex-1"></div>
           <div class="flex items-center gap-2 flex-wrap">
-            <!-- Bulk Actions -->
             <div id="section-bulk-actions" class="hidden items-center gap-2 bg-brand/10 border border-brand/30 rounded-md px-3 py-1.5">
               <input type="checkbox" class="rounded w-3.5 h-3.5 accent-orange-500">
               <span class="text-xs text-brand font-medium">Select all</span>
@@ -181,7 +323,6 @@
               <button class="text-xs text-gray-600 dark:text-brand-muted hover:text-brand font-medium transition-colors">Delete</button>
               <span class="flag-tag bg-orange-500/10 text-orange-500 dark:text-orange-400 border border-orange-500/20">bulk-actions</span>
             </div>
-            <!-- Data Export -->
             <button id="section-data-export" class="hidden items-center gap-1.5 bg-white dark:bg-brand-bg-2 border border-gray-200 dark:border-brand-border text-gray-700 dark:text-brand-muted text-xs font-medium rounded-md px-3 py-2 hover:border-brand hover:text-brand transition-colors">
               <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
               Export
@@ -226,16 +367,16 @@
           </div>
           <div class="flex items-end gap-2 h-28 mb-3">
             <div class="flex flex-col items-center gap-1 flex-1"><div class="w-full bg-brand rounded-t chart-bar" style="height:60%"></div><span class="text-[9px] text-gray-400 dark:text-brand-muted">Jan</span></div>
-            <div class="flex flex-col items-center gap-1 flex-1"><div class="w-full bg-brand rounded-t chart-bar" style="height:80%;animation-delay:0.05s"></div><span class="text-[9px] text-gray-400 dark:text-brand-muted">Feb</span></div>
-            <div class="flex flex-col items-center gap-1 flex-1"><div class="w-full bg-brand rounded-t chart-bar" style="height:55%;animation-delay:0.1s"></div><span class="text-[9px] text-gray-400 dark:text-brand-muted">Mar</span></div>
-            <div class="flex flex-col items-center gap-1 flex-1"><div class="w-full bg-brand rounded-t chart-bar" style="height:90%;animation-delay:0.15s"></div><span class="text-[9px] text-gray-400 dark:text-brand-muted">Apr</span></div>
-            <div class="flex flex-col items-center gap-1 flex-1"><div class="w-full bg-brand-secondary rounded-t chart-bar" style="height:72%;animation-delay:0.2s"></div><span class="text-[9px] text-gray-400 dark:text-brand-muted">May</span></div>
-            <div class="flex flex-col items-center gap-1 flex-1"><div class="w-full bg-brand rounded-t chart-bar" style="height:100%;animation-delay:0.25s"></div><span class="text-[9px] text-gray-400 dark:text-brand-muted">Jun</span></div>
+            <div class="flex flex-col items-center gap-1 flex-1"><div class="w-full bg-brand rounded-t chart-bar" style="height:80%;animation-delay:.05s"></div><span class="text-[9px] text-gray-400 dark:text-brand-muted">Feb</span></div>
+            <div class="flex flex-col items-center gap-1 flex-1"><div class="w-full bg-brand rounded-t chart-bar" style="height:55%;animation-delay:.1s"></div><span class="text-[9px] text-gray-400 dark:text-brand-muted">Mar</span></div>
+            <div class="flex flex-col items-center gap-1 flex-1"><div class="w-full bg-brand rounded-t chart-bar" style="height:90%;animation-delay:.15s"></div><span class="text-[9px] text-gray-400 dark:text-brand-muted">Apr</span></div>
+            <div class="flex flex-col items-center gap-1 flex-1"><div class="w-full bg-brand-secondary rounded-t chart-bar" style="height:72%;animation-delay:.2s"></div><span class="text-[9px] text-gray-400 dark:text-brand-muted">May</span></div>
+            <div class="flex flex-col items-center gap-1 flex-1"><div class="w-full bg-brand rounded-t chart-bar" style="height:100%;animation-delay:.25s"></div><span class="text-[9px] text-gray-400 dark:text-brand-muted">Jun</span></div>
           </div>
           <div class="flex gap-5 pt-3 border-t border-gray-100 dark:border-brand-border">
-            <div class="text-xs"><span class="text-gray-400 dark:text-brand-muted">Avg. Session</span> <span class="font-semibold text-gray-900 dark:text-brand-text ml-1">4m 22s</span></div>
-            <div class="text-xs"><span class="text-gray-400 dark:text-brand-muted">Bounce Rate</span> <span class="font-semibold text-gray-900 dark:text-brand-text ml-1">34.2%</span></div>
-            <div class="text-xs"><span class="text-gray-400 dark:text-brand-muted">Pages/Session</span> <span class="font-semibold text-gray-900 dark:text-brand-text ml-1">6.8</span></div>
+            <div class="text-xs"><span class="text-gray-400 dark:text-brand-muted">Avg. Session</span><span class="font-semibold text-gray-900 dark:text-brand-text ml-1">4m 22s</span></div>
+            <div class="text-xs"><span class="text-gray-400 dark:text-brand-muted">Bounce Rate</span><span class="font-semibold text-gray-900 dark:text-brand-text ml-1">34.2%</span></div>
+            <div class="text-xs"><span class="text-gray-400 dark:text-brand-muted">Pages/Session</span><span class="font-semibold text-gray-900 dark:text-brand-text ml-1">6.8</span></div>
           </div>
         </div>
 
@@ -256,14 +397,14 @@
                 <svg class="w-4 h-4 text-brand" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
               </div>
               <div class="text-sm font-semibold text-gray-900 dark:text-brand-text mb-1">White-label Reports</div>
-              <div class="text-xs text-gray-500 dark:text-brand-muted leading-relaxed">Export fully branded PDFs for your clients and stakeholders.</div>
+              <div class="text-xs text-gray-500 dark:text-brand-muted leading-relaxed">Export fully branded PDFs for your clients.</div>
             </div>
             <div class="bg-white dark:bg-brand-bg-2 border border-gray-200 dark:border-brand-border rounded-xl p-4">
               <div class="w-8 h-8 bg-brand/10 rounded-lg flex items-center justify-center mb-3">
                 <svg class="w-4 h-4 text-brand" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
               </div>
               <div class="text-sm font-semibold text-gray-900 dark:text-brand-text mb-1">Team Analytics</div>
-              <div class="text-xs text-gray-500 dark:text-brand-muted leading-relaxed">Break down all metrics by individual team member performance.</div>
+              <div class="text-xs text-gray-500 dark:text-brand-muted leading-relaxed">Break down metrics by individual team members.</div>
             </div>
           </div>
         </div>
@@ -275,16 +416,9 @@
             <span class="flag-tag bg-orange-500/10 text-orange-500 dark:text-orange-400 border border-orange-500/20 mr-1">rich-text-editor</span>
             <div class="w-px h-4 bg-gray-200 dark:bg-brand-border"></div>
             <div class="flex items-center gap-0.5">
-              <button class="w-6 h-6 flex items-center justify-center rounded text-xs font-bold text-gray-600 dark:text-brand-muted hover:bg-gray-200 dark:hover:bg-brand-border transition-colors">B</button>
-              <button class="w-6 h-6 flex items-center justify-center rounded text-xs italic text-gray-600 dark:text-brand-muted hover:bg-gray-200 dark:hover:bg-brand-border transition-colors">I</button>
-              <button class="w-6 h-6 flex items-center justify-center rounded text-xs underline text-gray-600 dark:text-brand-muted hover:bg-gray-200 dark:hover:bg-brand-border transition-colors">U</button>
-              <div class="w-px h-4 bg-gray-200 dark:bg-brand-border mx-1"></div>
-              <button class="w-6 h-6 flex items-center justify-center rounded text-gray-500 dark:text-brand-muted hover:bg-gray-200 dark:hover:bg-brand-border transition-colors">
-                <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
-              </button>
-              <button class="w-6 h-6 flex items-center justify-center rounded text-gray-500 dark:text-brand-muted hover:bg-gray-200 dark:hover:bg-brand-border transition-colors">
-                <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
-              </button>
+              <button class="w-6 h-6 flex items-center justify-center rounded text-xs font-bold text-gray-600 dark:text-brand-muted hover:bg-gray-200 dark:hover:bg-brand-border">B</button>
+              <button class="w-6 h-6 flex items-center justify-center rounded text-xs italic text-gray-600 dark:text-brand-muted hover:bg-gray-200 dark:hover:bg-brand-border">I</button>
+              <button class="w-6 h-6 flex items-center justify-center rounded text-xs underline text-gray-600 dark:text-brand-muted hover:bg-gray-200 dark:hover:bg-brand-border">U</button>
             </div>
           </div>
           <div class="p-4 text-sm text-gray-400 dark:text-brand-muted min-h-14 focus:outline-none cursor-text" contenteditable="true" spellcheck="false">Start typing your notes here…</div>
@@ -299,7 +433,7 @@
                 <span class="text-sm font-semibold text-gray-900 dark:text-brand-text">New API version available</span>
                 <span class="flag-tag bg-orange-500/10 text-orange-500 dark:text-orange-400 border border-orange-500/20">api-v2</span>
               </div>
-              <p class="text-xs text-gray-500 dark:text-brand-muted">Migrate to API v2 for improved rate limits, new endpoints, and up to 3× better performance. <a href="#" class="text-brand hover:underline">View migration guide →</a></p>
+              <p class="text-xs text-gray-500 dark:text-brand-muted">Migrate to API v2 for improved rate limits and 3× better performance. <a href="#" class="text-brand hover:underline">View migration guide →</a></p>
             </div>
           </div>
         </div>
@@ -308,30 +442,78 @@
     </div>
   </div>
 
-  <!-- AI Assistant (floating) -->
-  <div id="section-ai-assistant" class="hidden fixed bottom-20 right-6 z-50 fade-in">
+  <!-- AI Assistant -->
+  <div id="section-ai-assistant" class="hidden fixed bottom-6 right-6 z-40 fade-in">
     <div class="flex flex-col items-end gap-2">
-      <div id="ai-chat-bubble" class="bg-white dark:bg-brand-bg-2 border border-gray-200 dark:border-brand-border rounded-2xl shadow-2xl p-4 w-64 mb-1">
+      <div class="bg-white dark:bg-brand-bg-2 border border-gray-200 dark:border-brand-border rounded-2xl shadow-2xl p-4 w-64">
         <div class="flex items-center gap-2 mb-3">
           <div class="w-6 h-6 bg-brand rounded-full flex items-center justify-center flex-shrink-0">
-            <svg class="w-3 h-3 text-brand-bg" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"/></svg>
+            <svg class="w-3 h-3 text-brand-bg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
           </div>
           <span class="text-xs font-semibold text-gray-900 dark:text-brand-text">AI Assistant</span>
           <span class="flag-tag bg-orange-500/10 text-orange-500 dark:text-orange-400 border border-orange-500/20 ml-auto">ai-assistant</span>
         </div>
-        <p class="text-xs text-gray-500 dark:text-brand-muted mb-3">Ask me anything about your dashboard data.</p>
+        <p class="text-xs text-gray-500 dark:text-brand-muted mb-3">Ask me anything about your data.</p>
         <div class="flex gap-2">
-          <input type="text" placeholder="Ask a question…" class="flex-1 text-xs bg-gray-50 dark:bg-brand-bg border border-gray-200 dark:border-brand-border rounded-md px-2 py-1.5 outline-none focus:border-brand text-gray-900 dark:text-brand-text placeholder-gray-400 dark:placeholder-brand-muted transition-colors">
-          <button class="bg-brand hover:bg-brand-hover text-brand-bg text-xs font-bold px-2.5 py-1.5 rounded-md transition-colors flex-shrink-0">Ask</button>
+          <input type="text" placeholder="Ask a question…" class="flex-1 text-xs bg-gray-50 dark:bg-brand-bg border border-gray-200 dark:border-brand-border rounded-md px-2 py-1.5 outline-none focus:border-brand text-gray-900 dark:text-brand-text placeholder-gray-400 dark:placeholder-brand-muted">
+          <button class="bg-brand hover:bg-brand-hover text-brand-bg text-xs font-bold px-2.5 py-1.5 rounded-md flex-shrink-0">Ask</button>
         </div>
       </div>
-      <button class="w-12 h-12 bg-brand hover:bg-brand-hover text-brand-bg rounded-full shadow-lg flex items-center justify-center transition-colors">
+      <button class="w-12 h-12 bg-brand hover:bg-brand-hover text-brand-bg rounded-full shadow-lg flex items-center justify-center">
         <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
       </button>
     </div>
   </div>
 
-  <!-- Flag Legend (bottom-left) -->
+  <!-- ══════════════════════════════════════════
+       Embedded Flag Panel
+  ══════════════════════════════════════════ -->
+  <div id="ft-panel" role="dialog" aria-label="Feature Flag Panel">
+    <header id="ft-drag-handle">
+      <div class="ft-title">
+        Feature Flags
+        <span class="ft-badge" id="ft-badge">0</span>
+      </div>
+      <button class="ft-close-btn" onclick="togglePanel()" title="Close">✕</button>
+    </header>
+
+    <div class="ft-desc">
+      Override flags to preview different states. Changes apply instantly — no reload needed.
+    </div>
+
+    <div class="ft-presets">
+      <span class="ft-preset-label">Preset:</span>
+      <button class="ft-preset-btn" data-preset="Free Tier">Free Tier</button>
+      <button class="ft-preset-btn" data-preset="Pro Tier">Pro Tier</button>
+      <button class="ft-preset-btn" data-preset="Admin">Admin</button>
+    </div>
+
+    <div class="ft-filter-row">
+      <div style="display:flex;align-items:center;gap:8px;">
+        <label for="ft-filter-cb" style="cursor:pointer;">Show overridden only</label>
+        <span class="ft-override-count none" id="ft-count-badge">0 overrides</span>
+      </div>
+      <label class="ft-toggle">
+        <input type="checkbox" id="ft-filter-cb">
+        <span class="ft-toggle-track"></span>
+      </label>
+    </div>
+
+    <div class="ft-search-wrap">
+      <span class="ft-search-icon">
+        <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+      </span>
+      <input type="text" id="ft-search" placeholder="Filter flags…">
+    </div>
+
+    <div class="ft-list" id="ft-list"></div>
+
+    <footer id="ft-footer" style="display:none;">
+      <button class="ft-discard-btn" id="ft-discard">Discard all overrides</button>
+    </footer>
+  </div>
+
+  <!-- Flag Legend -->
   <div class="fixed bottom-6 left-6 z-40">
     <button onclick="toggleLegend()" class="flex items-center gap-2 bg-white dark:bg-brand-bg-2 border border-gray-200 dark:border-brand-border shadow-md rounded-lg px-3 py-2 text-xs font-semibold text-gray-600 dark:text-brand-muted hover:border-brand hover:text-brand transition-colors">
       <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
@@ -340,96 +522,108 @@
     <div id="legend-panel" class="hidden absolute bottom-full mb-2 left-0 bg-white dark:bg-brand-bg-2 border border-gray-200 dark:border-brand-border rounded-xl shadow-2xl p-4 w-72 fade-in">
       <div class="text-[10px] font-bold text-brand uppercase tracking-widest mb-3">Active Flag Overrides</div>
       <div id="legend-list" class="space-y-1.5 max-h-52 overflow-y-auto">
-        <div class="text-xs text-gray-400 dark:text-brand-muted italic">No overrides yet. Open the extension panel to get started.</div>
+        <div class="text-xs text-gray-400 dark:text-brand-muted italic">No overrides yet — click "Flags" in the header.</div>
       </div>
       <div class="mt-3 pt-3 border-t border-gray-100 dark:border-brand-border">
-        <p class="text-[10px] text-gray-400 dark:text-brand-muted leading-relaxed">Click the extension icon in your browser toolbar to open the flag panel. Changes apply in real time — no reload needed.</p>
+        <p class="text-[10px] text-gray-400 dark:text-brand-muted leading-relaxed">Changes apply in real time with no reload needed.</p>
       </div>
     </div>
   </div>
 
   <script>
+    /* ── Constants ── */
     const OVERRIDES_KEY = 'flags-overrides';
-    let legendOpen = false;
+    const POS_KEY       = 'flags-panel-pos';
+    const KNOWN_FLAGS   = [
+      'dark-mode','beta-banner','advanced-analytics','ai-assistant',
+      'data-export','notifications-v2','premium-features','collaboration-tools',
+      'custom-reports','bulk-actions','audit-log','api-v2',
+      'new-navigation','rich-text-editor','multi-tenant',
+    ];
+    const PRESETS = {
+      'Free Tier': {
+        'advanced-analytics':false,'ai-assistant':false,'premium-features':false,
+        'data-export':false,'collaboration-tools':false,'custom-reports':false,
+        'bulk-actions':false,'audit-log':false,'api-v2':false,
+        'rich-text-editor':false,'multi-tenant':false,'notifications-v2':false,
+        'new-navigation':false,'dark-mode':false,'beta-banner':false,
+      },
+      'Pro Tier': {
+        'advanced-analytics':true,'ai-assistant':true,'premium-features':true,
+        'data-export':true,'collaboration-tools':true,'custom-reports':true,
+        'bulk-actions':true,'notifications-v2':true,
+        'dark-mode':false,'beta-banner':false,
+      },
+      'Admin': {
+        'advanced-analytics':true,'ai-assistant':true,'premium-features':true,
+        'data-export':true,'collaboration-tools':true,'custom-reports':true,
+        'bulk-actions':true,'audit-log':true,'api-v2':true,
+        'rich-text-editor':true,'multi-tenant':true,'notifications-v2':true,
+        'new-navigation':true,'dark-mode':true,'beta-banner':true,
+      },
+    };
 
+    /* ── Storage helpers ── */
     function getFlags() {
       try { return JSON.parse(localStorage.getItem(OVERRIDES_KEY) || '{}'); }
       catch { return {}; }
     }
+    function saveFlags(f) {
+      localStorage.setItem(OVERRIDES_KEY, JSON.stringify(f));
+      applyFlags();
+      renderPanel();
+    }
 
-    function show(id, flag) {
+    /* ── Apply flags to the page ── */
+    function show(id, on) {
       const el = document.getElementById(id);
       if (!el) return;
-      const on = flag === true;
       el.classList.toggle('hidden', !on);
-      // Restore flex display for flex containers
-      if (on && el.dataset.flex) el.style.display = 'flex';
+      if (on) el.style.display = el.dataset.flex ? 'flex' : '';
     }
 
     function applyFlags() {
       const f = getFlags();
 
-      // dark-mode — toggle Tailwind dark class on <html>
       document.documentElement.classList.toggle('dark', f['dark-mode'] === true);
 
       // beta-banner
       const bb = document.getElementById('section-beta-banner');
-      if (bb) {
-        bb.classList.toggle('hidden', f['beta-banner'] !== true);
-        bb.classList.toggle('flex', f['beta-banner'] === true);
-      }
+      if (bb) { bb.classList.toggle('hidden', !f['beta-banner']); bb.style.display = f['beta-banner'] ? 'flex' : ''; }
 
-      // multi-tenant (org switcher)
+      // org switcher
       const os = document.getElementById('section-org-switcher');
-      if (os) {
-        os.classList.toggle('hidden', f['multi-tenant'] !== true);
-        os.classList.toggle('flex', f['multi-tenant'] === true);
-      }
+      if (os) { os.classList.toggle('hidden', !f['multi-tenant']); os.style.display = f['multi-tenant'] ? 'flex' : ''; }
 
-      // collaboration-tools
+      // team avatars
       const ta = document.getElementById('section-team-avatars');
-      if (ta) {
-        ta.classList.toggle('hidden', f['collaboration-tools'] !== true);
-        ta.classList.toggle('flex', f['collaboration-tools'] === true);
-      }
+      if (ta) { ta.classList.toggle('hidden', !f['collaboration-tools']); ta.style.display = f['collaboration-tools'] ? 'flex' : ''; }
 
-      // notifications-v2
+      // notifications
       const n1 = document.getElementById('notif-v1');
       const n2 = document.getElementById('notif-v2');
       if (n1) n1.classList.toggle('hidden', f['notifications-v2'] === true);
-      if (n2) {
-        n2.classList.toggle('hidden', f['notifications-v2'] !== true);
-        n2.classList.toggle('flex', f['notifications-v2'] === true);
-      }
+      if (n2) { n2.classList.toggle('hidden', f['notifications-v2'] !== true); n2.style.display = f['notifications-v2'] ? 'flex' : ''; }
 
-      // sidebar nav items
+      // sidebar items
       const sbr = document.getElementById('sidebar-reports');
-      if (sbr) sbr.classList.toggle('hidden', f['custom-reports'] !== true);
+      if (sbr) sbr.classList.toggle('hidden', !f['custom-reports']);
       const sba = document.getElementById('sidebar-audit');
-      if (sba) sba.classList.toggle('hidden', f['audit-log'] !== true);
+      if (sba) sba.classList.toggle('hidden', !f['audit-log']);
 
-      // new-navigation: swap sidebars
+      // navigation swap
       const sbc = document.getElementById('sidebar-classic');
       const sbn = document.getElementById('sidebar-new');
       if (sbc) sbc.classList.toggle('hidden', f['new-navigation'] === true);
-      if (sbn) {
-        sbn.classList.toggle('hidden', f['new-navigation'] !== true);
-        sbn.classList.toggle('flex', f['new-navigation'] === true);
-      }
+      if (sbn) { sbn.classList.toggle('hidden', f['new-navigation'] !== true); sbn.style.display = f['new-navigation'] ? 'flex' : ''; }
 
-      // toolbar items
+      // toolbar
       const ba = document.getElementById('section-bulk-actions');
-      if (ba) {
-        ba.classList.toggle('hidden', f['bulk-actions'] !== true);
-        ba.classList.toggle('flex', f['bulk-actions'] === true);
-      }
+      if (ba) { ba.classList.toggle('hidden', !f['bulk-actions']); ba.style.display = f['bulk-actions'] ? 'flex' : ''; }
       const de = document.getElementById('section-data-export');
-      if (de) {
-        de.classList.toggle('hidden', f['data-export'] !== true);
-        de.classList.toggle('flex', f['data-export'] === true);
-      }
+      if (de) { de.classList.toggle('hidden', !f['data-export']); de.style.display = f['data-export'] ? 'flex' : ''; }
 
-      // content sections
+      // content
       show('section-advanced-analytics', f['advanced-analytics']);
       show('section-premium-features',   f['premium-features']);
       show('section-rich-text-editor',   f['rich-text-editor']);
@@ -437,53 +631,164 @@
 
       // ai assistant
       const ai = document.getElementById('section-ai-assistant');
-      if (ai) {
-        ai.classList.toggle('hidden', f['ai-assistant'] !== true);
-        ai.classList.toggle('flex', f['ai-assistant'] === true);
-      }
+      if (ai) { ai.classList.toggle('hidden', !f['ai-assistant']); ai.style.display = f['ai-assistant'] ? 'flex' : ''; }
 
+      updateTriggerBadge(f);
       updateLegend(f);
     }
 
+    /* ── Trigger button badge ── */
+    function updateTriggerBadge(f) {
+      const n   = Object.keys(f).length;
+      const btn = document.getElementById('ft-trigger');
+      const cnt = document.getElementById('ft-trigger-count');
+      if (cnt) { cnt.textContent = n; cnt.classList.toggle('hidden', n === 0); cnt.style.display = n > 0 ? 'flex' : ''; }
+      if (btn) btn.classList.toggle('has-overrides', n > 0);
+    }
+
+    /* ── Legend ── */
+    let legendOpen = false;
+    function toggleLegend() {
+      legendOpen = !legendOpen;
+      document.getElementById('legend-panel').classList.toggle('hidden', !legendOpen);
+    }
     function updateLegend(f) {
       const list    = document.getElementById('legend-list');
       const trigger = document.getElementById('legend-trigger-text');
       const entries = Object.entries(f);
-
       if (!entries.length) {
         if (trigger) trigger.textContent = 'No active overrides';
-        if (list) list.innerHTML = '<div class="text-xs text-gray-400 dark:text-brand-muted italic">No overrides yet. Open the extension panel to get started.</div>';
+        if (list) list.innerHTML = '<div class="text-xs text-gray-400 dark:text-brand-muted italic">No overrides yet — click "Flags" in the header.</div>';
         return;
       }
-
       if (trigger) trigger.textContent = entries.length + ' override' + (entries.length !== 1 ? 's' : '') + ' active';
-      if (list) {
-        list.innerHTML = entries.map(([key, val]) => `
-          <div class="flex items-center gap-2 py-0.5">
-            <span class="w-1.5 h-1.5 rounded-full flex-shrink-0 ${val === true ? 'bg-emerald-500' : 'bg-rose-400'}"></span>
-            <span class="font-mono text-[10px] text-gray-700 dark:text-brand-text flex-1 truncate">${key}</span>
-            <span class="text-[9px] font-bold ${val === true ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-500 dark:text-rose-400'}">${val === true ? 'ON' : 'OFF'}</span>
-          </div>
-        `).join('');
-      }
+      if (list) list.innerHTML = entries.map(([k,v]) => `
+        <div class="flex items-center gap-2 py-0.5">
+          <span class="w-1.5 h-1.5 rounded-full flex-shrink-0 ${v===true?'bg-emerald-500':'bg-rose-400'}"></span>
+          <span class="font-mono text-[10px] text-gray-700 dark:text-brand-text flex-1 truncate">${k}</span>
+          <span class="text-[9px] font-bold ${v===true?'text-emerald-600 dark:text-emerald-400':'text-rose-500 dark:text-rose-400'}">${v===true?'ON':'OFF'}</span>
+        </div>`).join('');
     }
 
-    function toggleLegend() {
-      legendOpen = !legendOpen;
-      const panel = document.getElementById('legend-panel');
-      if (panel) panel.classList.toggle('hidden', !legendOpen);
+    /* ── Panel open / close ── */
+    let panelOpen = false;
+    function togglePanel() {
+      panelOpen = !panelOpen;
+      const p = document.getElementById('ft-panel');
+      p.classList.toggle('open', panelOpen);
+      if (panelOpen) { restorePos(); renderPanel(); }
     }
 
-    // Apply on load
-    applyFlags();
+    /* ── Panel drag ── */
+    function restorePos() {
+      const p = document.getElementById('ft-panel');
+      try {
+        const pos = JSON.parse(localStorage.getItem(POS_KEY));
+        if (pos) { p.style.top = pos.top + 'px'; p.style.left = pos.left + 'px'; p.style.right = 'auto'; }
+      } catch {}
+    }
+    (function wireDrag() {
+      const handle = document.getElementById('ft-drag-handle');
+      const panel  = document.getElementById('ft-panel');
+      let drag = false, sx, sy, ox, oy;
+      handle.addEventListener('mousedown', e => {
+        if (e.target.tagName === 'BUTTON') return;
+        drag = true; sx = e.clientX; sy = e.clientY;
+        const r = panel.getBoundingClientRect(); ox = r.left; oy = r.top;
+        panel.style.right = 'auto'; panel.style.left = ox + 'px'; panel.style.top = oy + 'px';
+        e.preventDefault();
+      });
+      window.addEventListener('mousemove', e => {
+        if (!drag) return;
+        panel.style.left = (ox + e.clientX - sx) + 'px';
+        panel.style.top  = (oy + e.clientY - sy) + 'px';
+      });
+      window.addEventListener('mouseup', () => {
+        if (!drag) return; drag = false;
+        try { localStorage.setItem(POS_KEY, JSON.stringify({ left: parseInt(panel.style.left), top: parseInt(panel.style.top) })); } catch {}
+      });
+    })();
 
-    // Real-time: extension dispatches this after every save
-    window.addEventListener('flags:updated', applyFlags);
+    /* ── Panel render ── */
+    let filterQuery = '';
+    let showOverriddenOnly = false;
 
-    // Cross-tab: storage event fires when another context writes
-    window.addEventListener('storage', (e) => {
-      if (e.key === OVERRIDES_KEY) applyFlags();
+    document.getElementById('ft-search').addEventListener('input', e => {
+      filterQuery = e.target.value.trim().toLowerCase(); renderList();
     });
+    document.getElementById('ft-filter-cb').addEventListener('change', e => {
+      showOverriddenOnly = e.target.checked; renderList();
+    });
+    document.getElementById('ft-list').addEventListener('click', e => {
+      const btn = e.target.closest('button[data-flag]');
+      if (!btn) return;
+      const f = getFlags();
+      const { flag, val } = btn.dataset;
+      if (val === 'unset') delete f[flag]; else f[flag] = val === 'true';
+      saveFlags(f);
+    });
+    document.getElementById('ft-presets').addEventListener('click', e => {
+      const btn = e.target.closest('button[data-preset]');
+      if (!btn) return;
+      saveFlags({ ...PRESETS[btn.dataset.preset] });
+    });
+    document.getElementById('ft-discard').addEventListener('click', () => {
+      saveFlags({});
+    });
+
+    function renderPanel() { renderPresets(); renderList(); renderBanner(); }
+
+    function renderList() {
+      const overrides = getFlags();
+      let list = KNOWN_FLAGS.filter(f => f.includes(filterQuery));
+      if (showOverriddenOnly) list = list.filter(f => f in overrides);
+      const el = document.getElementById('ft-list');
+      el.innerHTML = !list.length
+        ? '<div class="ft-empty">No matching flags.</div>'
+        : list.map(flag => {
+            const v = overrides[flag];
+            const state = !(flag in overrides) ? 'unset' : v === true ? 'true' : 'false';
+            const sb = (val, lbl) => `<button class="ft-seg-btn${state===val?' on':''}" data-flag="${flag}" data-val="${val}">${lbl}</button>`;
+            return `<div class="ft-row">
+              <div class="ft-flag-name"><code title="${flag}">${flag}</code></div>
+              <div class="ft-seg">${sb('unset','—')}${sb('true','ON')}${sb('false','OFF')}</div>
+            </div>`;
+          }).join('');
+    }
+
+    function renderBanner() {
+      const n = Object.keys(getFlags()).length;
+      const badge = document.getElementById('ft-count-badge');
+      if (badge) {
+        badge.textContent = n + ' override' + (n !== 1 ? 's' : '');
+        badge.className = 'ft-override-count' + (n === 0 ? ' none' : '');
+      }
+      const hbadge = document.getElementById('ft-badge');
+      if (hbadge) {
+        hbadge.textContent = n;
+        hbadge.className = 'ft-badge' + (n > 0 ? ' visible' : '');
+      }
+      const footer = document.getElementById('ft-footer');
+      if (footer) footer.style.display = n > 0 ? 'flex' : 'none';
+      if (footer) footer.style.flexDirection = 'column';
+    }
+
+    function renderPresets() {
+      const overrides = getFlags();
+      const oKeys = Object.keys(overrides);
+      let active = null;
+      for (const [name, flags] of Object.entries(PRESETS)) {
+        const fk = Object.keys(flags);
+        if (fk.length === oKeys.length && fk.every(k => overrides[k] === flags[k])) { active = name; break; }
+      }
+      document.querySelectorAll('#ft-presets .ft-preset-btn').forEach(b => {
+        b.classList.toggle('active', b.dataset.preset === active);
+      });
+    }
+
+    /* ── Init ── */
+    applyFlags();
+    window.addEventListener('storage', e => { if (e.key === OVERRIDES_KEY) applyFlags(); });
   </script>
 </body>
 </html>
