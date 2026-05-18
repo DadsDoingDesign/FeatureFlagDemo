@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en" id="html-root">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashify — Feature Flag Demo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              DEFAULT: '#fb923c',
+              hover:   '#f97316',
+              secondary: '#fbbf24',
+              bg:      '#18181b',
+              'bg-2':  '#27272a',
+              text:    '#fff7ed',
+              muted:   '#a1a1aa',
+              border:  '#3f3f46',
+            }
+          },
+          fontFamily: { sans: ['Inter', 'sans-serif'] }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .flag-tag {
+      font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+      font-size: 9px; font-weight: 600; letter-spacing: 0.03em;
+      padding: 2px 5px; border-radius: 3px; white-space: nowrap;
+    }
+    .nav-item { transition: background 0.12s, color 0.12s; }
+    @keyframes growBar { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+    .chart-bar { transform-origin: bottom; animation: growBar 0.5s ease-out forwards; }
+    @keyframes fadeSlideIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
+    .fade-in { animation: fadeSlideIn 0.25s ease-out forwards; }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-900 dark:bg-brand-bg dark:text-brand-text font-sans transition-colors duration-300 h-screen overflow-hidden flex flex-col">
+
+  <!-- Beta Banner -->
+  <div id="section-beta-banner" class="hidden bg-amber-400 dark:bg-amber-500 text-amber-950 text-xs font-semibold text-center py-2 px-4 items-center justify-center gap-2 flex-shrink-0">
+    <span>🚧</span>
+    <span>Beta mode — you may encounter experimental features</span>
+    <span class="flag-tag bg-amber-600/20 text-amber-800 border border-amber-700/30 ml-1">beta-banner</span>
+  </div>
+
+  <!-- App Shell -->
+  <div class="flex flex-1 overflow-hidden">
+
+    <!-- Sidebar Classic -->
+    <aside id="sidebar-classic" class="w-56 flex-shrink-0 border-r border-gray-200 dark:border-brand-border bg-white dark:bg-brand-bg-2 flex flex-col">
+      <div class="h-14 flex items-center px-4 border-b border-gray-200 dark:border-brand-border gap-2.5 flex-shrink-0">
+        <div class="w-7 h-7 bg-brand rounded-md flex items-center justify-center flex-shrink-0">
+          <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 16 16"><path d="M1 1h6v6H1zm8 0h6v6H9zM1 9h6v6H1zm8 0h6v6H9z"/></svg>
+        </div>
+        <span class="font-bold text-sm text-gray-900 dark:text-brand-text">Dashify</span>
+        <span class="ml-auto text-[9px] font-bold text-brand uppercase tracking-wide border border-brand/30 bg-brand/10 px-1.5 py-0.5 rounded">Demo</span>
+      </div>
+      <nav class="flex-1 p-3 space-y-0.5 overflow-y-auto">
+        <a href="#" class="nav-item flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium bg-gray-100 dark:bg-brand-border text-gray-900 dark:text-brand-text">
+          <svg class="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+          Dashboard
+        </a>
+        <a href="#" class="nav-item flex items-center gap-3 px-3 py-2 rounded-md text-sm text-gray-500 dark:text-brand-muted hover:bg-gray-100 dark:hover:bg-brand-border hover:text-gray-900 dark:hover:text-brand-text">
+          <svg class="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          Analytics
+        </a>
+        <a id="sidebar-reports" href="#" class="hidden nav-item flex items-center gap-3 px-3 py-2 rounded-md text-sm text-gray-500 dark:text-brand-muted hover:bg-gray-100 dark:hover:bg-brand-border hover:text-gray-900 dark:hover:text-brand-text">
+          <svg class="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+          Reports
+          <span class="ml-auto flag-tag bg-orange-500/10 text-orange-500 dark:text-orange-400 border border-orange-500/20">custom-reports</span>
+        </a>
+        <a id="sidebar-audit" href="#" class="hidden nav-item flex items-center gap-3 px-3 py-2 rounded-md text-sm text-gray-500 dark:text-brand-muted hover:bg-gray-100 dark:hover:bg-brand-border hover:text-gray-900 dark:hover:text-brand-text">
+          <svg class="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+          Audit Log
+          <span class="ml-auto flag-tag bg-orange-500/10 text-orange-500 dark:text-orange-400 border border-orange-500/20">audit-log</span>
+        </a>
+        <a href="#" class="nav-item flex items-center gap-3 px-3 py-2 rounded-md text-sm text-gray-500 dark:text-brand-muted hover:bg-gray-100 dark:hover:bg-brand-border hover:text-gray-900 dark:hover:text-brand-text">
+          <svg class="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          Settings
+        </a>
+      </nav>
+      <div class="p-3 border-t border-gray-200 dark:border-brand-border flex-shrink-0">
+        <div class="flex items-center gap-2.5 px-2 py-1.5">
+          <div class="w-7 h-7 rounded-full bg-brand flex items-center justify-center text-[10px] font-bold text-brand-bg flex-shrink-0">DD</div>
+          <div class="min-w-0">
+            <div class="text-xs font-semibold text-gray-900 dark:text-brand-text truncate">Denis D.</div>
+            <div class="text-[10px] text-gray-400 dark:text-brand-muted">Admin</div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Sidebar New Navigation (icon-only) -->
+    <aside id="sidebar-new" class="hidden w-14 flex-shrink-0 border-r border-gray-200 dark:border-brand-border bg-white dark:bg-brand-bg-2 flex-col items-center py-3 gap-1">
+      <div class="w-8 h-8 bg-brand rounded-md flex items-center justify-center mb-2">
+        <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 16 16"><path d="M1 1h6v6H1zm8 0h6v6H9zM1 9h6v6H1zm8 0h6v6H9z"/></svg>
+      </div>
+      <button title="Dashboard" class="w-9 h-9 rounded-md flex items-center justify-center bg-gray-100 dark:bg-brand-border text-gray-700 dark:text-brand-text">
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      </button>
+      <button title="Analytics" class="w-9 h-9 rounded-md flex items-center justify-center text-gray-400 dark:text-brand-muted hover:bg-gray-100 dark:hover:bg-brand-border">
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      </button>
+      <button title="Settings" class="w-9 h-9 rounded-md flex items-center justify-center text-gray-400 dark:text-brand-muted hover:bg-gray-100 dark:hover:bg-brand-border mt-auto">
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+      </button>
+      <span class="flag-tag bg-orange-500/10 text-orange-400 border border-orange-500/20 mt-1" style="writing-mode:vertical-rl;transform:rotate(180deg)">new-navigation</span>
+    </aside>
+
+    <!-- Main Area -->
+    <div class="flex-1 flex flex-col overflow-hidden">
+
+      <!-- Top Nav -->
+      <header class="h-14 flex-shrink-0 flex items-center gap-3 px-5 border-b border-gray-200 dark:border-brand-border bg-white dark:bg-brand-bg-2">
+        <!-- Org Switcher -->
+        <div id="section-org-switcher" class="hidden items-center gap-2">
+          <select class="text-xs font-medium border border-gray-200 dark:border-brand-border bg-white dark:bg-brand-bg text-gray-700 dark:text-brand-muted rounded px-2 py-1.5 outline-none cursor-pointer focus:border-brand">
+            <option>Acme Corp</option>
+            <option>Beta Inc</option>
+            <option>Demo Workspace</option>
+          </select>
+          <span class="flag-tag bg-orange-500/10 text-orange-500 dark:text-orange-400 border border-orange-500/20">multi-tenant</span>
+        </div>
+
+        <div class="flex-1"></div>
+
+        <!-- Team Avatars -->
+        <div id="section-team-avatars" class="hidden items-center gap-2">
+          <div class="flex -space-x-2">
+            <div title="Jamie L." class="w-7 h-7 rounded-full bg-sky-500 border-2 border-white dark:border-brand-bg-2 flex items-center justify-center text-[9px] font-bold text-white cursor-pointer">JL</div>
+            <div title="Morgan K." class="w-7 h-7 rounded-full bg-violet-500 border-2 border-white dark:border-brand-bg-2 flex items-center justify-center text-[9px] font-bold text-white cursor-pointer">MK</div>
+            <div title="Alex R." class="w-7 h-7 rounded-full bg-emerald-500 border-2 border-white dark:border-brand-bg-2 flex items-center justify-center text-[9px] font-bold text-white cursor-pointer">AR</div>
+            <div class="w-7 h-7 rounded-full bg-gray-200 dark:bg-brand-border border-2 border-white dark:border-brand-bg-2 flex items-center justify-center text-[9px] font-semibold text-gray-500 dark:text-brand-muted">+4</div>
+          </div>
+          <span class="flag-tag bg-orange-500/10 text-orange-500 dark:text-orange-400 border border-orange-500/20">collaboration-tools</span>
+        </div>
+
+        <!-- Notifications v1 -->
+        <button id="notif-v1" class="w-8 h-8 rounded-md flex items-center justify-center text-gray-400 dark:text-brand-muted hover:bg-gray-100 dark:hover:bg-brand-border transition-colors">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        </button>
+        <!-- Notifications v2 (with badge) -->
+        <button id="notif-v2" class="hidden w-8 h-8 rounded-md items-center justify-center text-gray-400 dark:text-brand-muted hover:bg-gray-100 dark:hover:bg-brand-border relative transition-colors">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-brand rounded-full border border-white dark:border-brand-bg-2"></span>
+          <span class="absolute -bottom-3 left-1/2 -translate-x-1/2 flag-tag bg-orange-500/10 text-orange-400 border border-orange-500/20">v2</span>
+        </button>
+
+        <div class="w-px h-6 bg-gray-200 dark:bg-brand-border"></div>
+
+        <!-- User avatar -->
+        <div class="w-8 h-8 rounded-full bg-brand flex items-center justify-center text-[11px] font-bold text-brand-bg cursor-pointer select-none" title="Denis D.">DD</div>
+      </header>
+
+      <!-- Content -->
+      <main class="flex-1 overflow-auto p-6 bg-gray-50 dark:bg-brand-bg">
+
+        <!-- Page Header + Toolbar -->
+        <div class="flex items-start gap-3 mb-6 flex-wrap">
+          <div>
+            <h1 class="text-lg font-bold text-gray-900 dark:text-brand-text leading-tight">Dashboard</h1>
+            <p class="text-xs text-gray-500 dark:text-brand-muted mt-0.5">Welcome back. Here's what's happening today.</p>
+          </div>
+          <div class="flex-1"></div>
+          <div class="flex items-center gap-2 flex-wrap">
+            <!-- Bulk Actions -->
+            <div id="section-bulk-actions" class="hidden items-center gap-2 bg-brand/10 border border-brand/30 rounded-md px-3 py-1.5">
+              <input type="checkbox" class="rounded w-3.5 h-3.5 accent-orange-500">
+              <span class="text-xs text-brand font-medium">Select all</span>
+              <span class="w-px h-4 bg-brand/30"></span>
+              <button class="text-xs text-gray-600 dark:text-brand-muted hover:text-brand font-medium transition-colors">Archive</button>
+              <button class="text-xs text-gray-600 dark:text-brand-muted hover:text-brand font-medium transition-colors">Delete</button>
+              <span class="flag-tag bg-orange-500/10 text-orange-500 dark:text-orange-400 border border-orange-500/20">bulk-actions</span>
+            </div>
+            <!-- Data Export -->
+            <button id="section-data-export" class="hidden items-center gap-1.5 bg-white dark:bg-brand-bg-2 border border-gray-200 dark:border-brand-border text-gray-700 dark:text-brand-muted text-xs font-medium rounded-md px-3 py-2 hover:border-brand hover:text-brand transition-colors">
+              <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Export
+              <span class="flag-tag bg-orange-500/10 text-orange-500 dark:text-orange-400 border border-orange-500/20">data-export</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+          <div class="bg-white dark:bg-brand-bg-2 border border-gray-200 dark:border-brand-border rounded-xl p-4">
+            <div class="text-[11px] text-gray-500 dark:text-brand-muted font-medium mb-1 uppercase tracking-wide">Total Users</div>
+            <div class="text-2xl font-bold text-gray-900 dark:text-brand-text tabular-nums">12,483</div>
+            <div class="text-xs text-emerald-600 dark:text-emerald-400 font-medium mt-1.5">↑ 8.2% this month</div>
+          </div>
+          <div class="bg-white dark:bg-brand-bg-2 border border-gray-200 dark:border-brand-border rounded-xl p-4">
+            <div class="text-[11px] text-gray-500 dark:text-brand-muted font-medium mb-1 uppercase tracking-wide">Revenue</div>
+            <div class="text-2xl font-bold text-gray-900 dark:text-brand-text tabular-nums">$94,210</div>
+            <div class="text-xs text-emerald-600 dark:text-emerald-400 font-medium mt-1.5">↑ 12.1% this month</div>
+          </div>
+          <div class="bg-white dark:bg-brand-bg-2 border border-gray-200 dark:border-brand-border rounded-xl p-4">
+            <div class="text-[11px] text-gray-500 dark:text-brand-muted font-medium mb-1 uppercase tracking-wide">Active Sessions</div>
+            <div class="text-2xl font-bold text-gray-900 dark:text-brand-text tabular-nums">3,847</div>
+            <div class="text-xs text-rose-500 dark:text-rose-400 font-medium mt-1.5">↓ 2.4% today</div>
+          </div>
+          <div class="bg-white dark:bg-brand-bg-2 border border-gray-200 dark:border-brand-border rounded-xl p-4">
+            <div class="text-[11px] text-gray-500 dark:text-brand-muted font-medium mb-1 uppercase tracking-wide">Conversion</div>
+            <div class="text-2xl font-bold text-gray-900 dark:text-brand-text tabular-nums">4.7%</div>
+            <div class="text-xs text-emerald-600 dark:text-emerald-400 font-medium mt-1.5">↑ 0.3% this week</div>
+          </div>
+        </div>
+
+        <!-- Advanced Analytics -->
+        <div id="section-advanced-analytics" class="hidden mb-6 bg-white dark:bg-brand-bg-2 border border-gray-200 dark:border-brand-border rounded-xl p-5 fade-in">
+          <div class="flex items-center gap-2 mb-4">
+            <h2 class="text-sm font-semibold text-gray-900 dark:text-brand-text">Advanced Analytics</h2>
+            <span class="flag-tag bg-orange-500/10 text-orange-500 dark:text-orange-400 border border-orange-500/20">advanced-analytics</span>
+            <div class="flex-1"></div>
+            <select class="text-xs border border-gray-200 dark:border-brand-border bg-gray-50 dark:bg-brand-bg text-gray-600 dark:text-brand-muted rounded px-2 py-1 outline-none">
+              <option>Last 6 months</option><option>Last 30 days</option><option>Last year</option>
+            </select>
+          </div>
+          <div class="flex items-end gap-2 h-28 mb-3">
+            <div class="flex flex-col items-center gap-1 flex-1"><div class="w-full bg-brand rounded-t chart-bar" style="height:60%"></div><span class="text-[9px] text-gray-400 dark:text-brand-muted">Jan</span></div>
+            <div class="flex flex-col items-center gap-1 flex-1"><div class="w-full bg-brand rounded-t chart-bar" style="height:80%;animation-delay:0.05s"></div><span class="text-[9px] text-gray-400 dark:text-brand-muted">Feb</span></div>
+            <div class="flex flex-col items-center gap-1 flex-1"><div class="w-full bg-brand rounded-t chart-bar" style="height:55%;animation-delay:0.1s"></div><span class="text-[9px] text-gray-400 dark:text-brand-muted">Mar</span></div>
+            <div class="flex flex-col items-center gap-1 flex-1"><div class="w-full bg-brand rounded-t chart-bar" style="height:90%;animation-delay:0.15s"></div><span class="text-[9px] text-gray-400 dark:text-brand-muted">Apr</span></div>
+            <div class="flex flex-col items-center gap-1 flex-1"><div class="w-full bg-brand-secondary rounded-t chart-bar" style="height:72%;animation-delay:0.2s"></div><span class="text-[9px] text-gray-400 dark:text-brand-muted">May</span></div>
+            <div class="flex flex-col items-center gap-1 flex-1"><div class="w-full bg-brand rounded-t chart-bar" style="height:100%;animation-delay:0.25s"></div><span class="text-[9px] text-gray-400 dark:text-brand-muted">Jun</span></div>
+          </div>
+          <div class="flex gap-5 pt-3 border-t border-gray-100 dark:border-brand-border">
+            <div class="text-xs"><span class="text-gray-400 dark:text-brand-muted">Avg. Session</span> <span class="font-semibold text-gray-900 dark:text-brand-text ml-1">4m 22s</span></div>
+            <div class="text-xs"><span class="text-gray-400 dark:text-brand-muted">Bounce Rate</span> <span class="font-semibold text-gray-900 dark:text-brand-text ml-1">34.2%</span></div>
+            <div class="text-xs"><span class="text-gray-400 dark:text-brand-muted">Pages/Session</span> <span class="font-semibold text-gray-900 dark:text-brand-text ml-1">6.8</span></div>
+          </div>
+        </div>
+
+        <!-- Premium Features -->
+        <div id="section-premium-features" class="hidden mb-6 fade-in">
+          <div class="flex items-center gap-2 mb-3">
+            <h2 class="text-sm font-semibold text-gray-900 dark:text-brand-text">Premium Features</h2>
+            <span class="flag-tag bg-orange-500/10 text-orange-500 dark:text-orange-400 border border-orange-500/20">premium-features</span>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div class="bg-gradient-to-br from-orange-500 to-amber-400 rounded-xl p-4 text-brand-bg">
+              <div class="text-[10px] font-bold uppercase tracking-widest opacity-70 mb-2">Predictive AI</div>
+              <div class="text-sm font-semibold leading-snug">Forecast 90-day user growth with ML models trained on your data.</div>
+              <button class="mt-3 text-xs font-semibold bg-black/10 hover:bg-black/20 px-3 py-1.5 rounded-md transition-colors">Explore →</button>
+            </div>
+            <div class="bg-white dark:bg-brand-bg-2 border border-gray-200 dark:border-brand-border rounded-xl p-4">
+              <div class="w-8 h-8 bg-brand/10 rounded-lg flex items-center justify-center mb-3">
+                <svg class="w-4 h-4 text-brand" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              </div>
+              <div class="text-sm font-semibold text-gray-900 dark:text-brand-text mb-1">White-label Reports</div>
+              <div class="text-xs text-gray-500 dark:text-brand-muted leading-relaxed">Export fully branded PDFs for your clients and stakeholders.</div>
+            </div>
+            <div class="bg-white dark:bg-brand-bg-2 border border-gray-200 dark:border-brand-border rounded-xl p-4">
+              <div class="w-8 h-8 bg-brand/10 rounded-lg flex items-center justify-center mb-3">
+                <svg class="w-4 h-4 text-brand" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+              </div>
+              <div class="text-sm font-semibold text-gray-900 dark:text-brand-text mb-1">Team Analytics</div>
+              <div class="text-xs text-gray-500 dark:text-brand-muted leading-relaxed">Break down all metrics by individual team member performance.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Rich Text Editor -->
+        <div id="section-rich-text-editor" class="hidden mb-6 bg-white dark:bg-brand-bg-2 border border-gray-200 dark:border-brand-border rounded-xl overflow-hidden fade-in">
+          <div class="flex items-center gap-2 px-4 py-2 border-b border-gray-100 dark:border-brand-border bg-gray-50 dark:bg-brand-bg flex-wrap">
+            <span class="text-xs font-semibold text-gray-700 dark:text-brand-text">Notes</span>
+            <span class="flag-tag bg-orange-500/10 text-orange-500 dark:text-orange-400 border border-orange-500/20 mr-1">rich-text-editor</span>
+            <div class="w-px h-4 bg-gray-200 dark:bg-brand-border"></div>
+            <div class="flex items-center gap-0.5">
+              <button class="w-6 h-6 flex items-center justify-center rounded text-xs font-bold text-gray-600 dark:text-brand-muted hover:bg-gray-200 dark:hover:bg-brand-border transition-colors">B</button>
+              <button class="w-6 h-6 flex items-center justify-center rounded text-xs italic text-gray-600 dark:text-brand-muted hover:bg-gray-200 dark:hover:bg-brand-border transition-colors">I</button>
+              <button class="w-6 h-6 flex items-center justify-center rounded text-xs underline text-gray-600 dark:text-brand-muted hover:bg-gray-200 dark:hover:bg-brand-border transition-colors">U</button>
+              <div class="w-px h-4 bg-gray-200 dark:bg-brand-border mx-1"></div>
+              <button class="w-6 h-6 flex items-center justify-center rounded text-gray-500 dark:text-brand-muted hover:bg-gray-200 dark:hover:bg-brand-border transition-colors">
+                <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+              </button>
+              <button class="w-6 h-6 flex items-center justify-center rounded text-gray-500 dark:text-brand-muted hover:bg-gray-200 dark:hover:bg-brand-border transition-colors">
+                <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+              </button>
+            </div>
+          </div>
+          <div class="p-4 text-sm text-gray-400 dark:text-brand-muted min-h-14 focus:outline-none cursor-text" contenteditable="true" spellcheck="false">Start typing your notes here…</div>
+        </div>
+
+        <!-- API v2 Notice -->
+        <div id="section-api-v2" class="hidden mb-6 bg-white dark:bg-brand-bg-2 border border-brand/40 rounded-xl p-4 fade-in">
+          <div class="flex items-start gap-3">
+            <span class="text-xs font-bold bg-brand text-brand-bg px-2 py-0.5 rounded mt-0.5 flex-shrink-0">v2</span>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-2 mb-1">
+                <span class="text-sm font-semibold text-gray-900 dark:text-brand-text">New API version available</span>
+                <span class="flag-tag bg-orange-500/10 text-orange-500 dark:text-orange-400 border border-orange-500/20">api-v2</span>
+              </div>
+              <p class="text-xs text-gray-500 dark:text-brand-muted">Migrate to API v2 for improved rate limits, new endpoints, and up to 3× better performance. <a href="#" class="text-brand hover:underline">View migration guide →</a></p>
+            </div>
+          </div>
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- AI Assistant (floating) -->
+  <div id="section-ai-assistant" class="hidden fixed bottom-20 right-6 z-50 fade-in">
+    <div class="flex flex-col items-end gap-2">
+      <div id="ai-chat-bubble" class="bg-white dark:bg-brand-bg-2 border border-gray-200 dark:border-brand-border rounded-2xl shadow-2xl p-4 w-64 mb-1">
+        <div class="flex items-center gap-2 mb-3">
+          <div class="w-6 h-6 bg-brand rounded-full flex items-center justify-center flex-shrink-0">
+            <svg class="w-3 h-3 text-brand-bg" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"/></svg>
+          </div>
+          <span class="text-xs font-semibold text-gray-900 dark:text-brand-text">AI Assistant</span>
+          <span class="flag-tag bg-orange-500/10 text-orange-500 dark:text-orange-400 border border-orange-500/20 ml-auto">ai-assistant</span>
+        </div>
+        <p class="text-xs text-gray-500 dark:text-brand-muted mb-3">Ask me anything about your dashboard data.</p>
+        <div class="flex gap-2">
+          <input type="text" placeholder="Ask a question…" class="flex-1 text-xs bg-gray-50 dark:bg-brand-bg border border-gray-200 dark:border-brand-border rounded-md px-2 py-1.5 outline-none focus:border-brand text-gray-900 dark:text-brand-text placeholder-gray-400 dark:placeholder-brand-muted transition-colors">
+          <button class="bg-brand hover:bg-brand-hover text-brand-bg text-xs font-bold px-2.5 py-1.5 rounded-md transition-colors flex-shrink-0">Ask</button>
+        </div>
+      </div>
+      <button class="w-12 h-12 bg-brand hover:bg-brand-hover text-brand-bg rounded-full shadow-lg flex items-center justify-center transition-colors">
+        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Flag Legend (bottom-left) -->
+  <div class="fixed bottom-6 left-6 z-40">
+    <button onclick="toggleLegend()" class="flex items-center gap-2 bg-white dark:bg-brand-bg-2 border border-gray-200 dark:border-brand-border shadow-md rounded-lg px-3 py-2 text-xs font-semibold text-gray-600 dark:text-brand-muted hover:border-brand hover:text-brand transition-colors">
+      <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      <span id="legend-trigger-text">No active overrides</span>
+    </button>
+    <div id="legend-panel" class="hidden absolute bottom-full mb-2 left-0 bg-white dark:bg-brand-bg-2 border border-gray-200 dark:border-brand-border rounded-xl shadow-2xl p-4 w-72 fade-in">
+      <div class="text-[10px] font-bold text-brand uppercase tracking-widest mb-3">Active Flag Overrides</div>
+      <div id="legend-list" class="space-y-1.5 max-h-52 overflow-y-auto">
+        <div class="text-xs text-gray-400 dark:text-brand-muted italic">No overrides yet. Open the extension panel to get started.</div>
+      </div>
+      <div class="mt-3 pt-3 border-t border-gray-100 dark:border-brand-border">
+        <p class="text-[10px] text-gray-400 dark:text-brand-muted leading-relaxed">Click the extension icon in your browser toolbar to open the flag panel. Changes apply in real time — no reload needed.</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const OVERRIDES_KEY = 'flags-overrides';
+    let legendOpen = false;
+
+    function getFlags() {
+      try { return JSON.parse(localStorage.getItem(OVERRIDES_KEY) || '{}'); }
+      catch { return {}; }
+    }
+
+    function show(id, flag) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const on = flag === true;
+      el.classList.toggle('hidden', !on);
+      // Restore flex display for flex containers
+      if (on && el.dataset.flex) el.style.display = 'flex';
+    }
+
+    function applyFlags() {
+      const f = getFlags();
+
+      // dark-mode — toggle Tailwind dark class on <html>
+      document.documentElement.classList.toggle('dark', f['dark-mode'] === true);
+
+      // beta-banner
+      const bb = document.getElementById('section-beta-banner');
+      if (bb) {
+        bb.classList.toggle('hidden', f['beta-banner'] !== true);
+        bb.classList.toggle('flex', f['beta-banner'] === true);
+      }
+
+      // multi-tenant (org switcher)
+      const os = document.getElementById('section-org-switcher');
+      if (os) {
+        os.classList.toggle('hidden', f['multi-tenant'] !== true);
+        os.classList.toggle('flex', f['multi-tenant'] === true);
+      }
+
+      // collaboration-tools
+      const ta = document.getElementById('section-team-avatars');
+      if (ta) {
+        ta.classList.toggle('hidden', f['collaboration-tools'] !== true);
+        ta.classList.toggle('flex', f['collaboration-tools'] === true);
+      }
+
+      // notifications-v2
+      const n1 = document.getElementById('notif-v1');
+      const n2 = document.getElementById('notif-v2');
+      if (n1) n1.classList.toggle('hidden', f['notifications-v2'] === true);
+      if (n2) {
+        n2.classList.toggle('hidden', f['notifications-v2'] !== true);
+        n2.classList.toggle('flex', f['notifications-v2'] === true);
+      }
+
+      // sidebar nav items
+      const sbr = document.getElementById('sidebar-reports');
+      if (sbr) sbr.classList.toggle('hidden', f['custom-reports'] !== true);
+      const sba = document.getElementById('sidebar-audit');
+      if (sba) sba.classList.toggle('hidden', f['audit-log'] !== true);
+
+      // new-navigation: swap sidebars
+      const sbc = document.getElementById('sidebar-classic');
+      const sbn = document.getElementById('sidebar-new');
+      if (sbc) sbc.classList.toggle('hidden', f['new-navigation'] === true);
+      if (sbn) {
+        sbn.classList.toggle('hidden', f['new-navigation'] !== true);
+        sbn.classList.toggle('flex', f['new-navigation'] === true);
+      }
+
+      // toolbar items
+      const ba = document.getElementById('section-bulk-actions');
+      if (ba) {
+        ba.classList.toggle('hidden', f['bulk-actions'] !== true);
+        ba.classList.toggle('flex', f['bulk-actions'] === true);
+      }
+      const de = document.getElementById('section-data-export');
+      if (de) {
+        de.classList.toggle('hidden', f['data-export'] !== true);
+        de.classList.toggle('flex', f['data-export'] === true);
+      }
+
+      // content sections
+      show('section-advanced-analytics', f['advanced-analytics']);
+      show('section-premium-features',   f['premium-features']);
+      show('section-rich-text-editor',   f['rich-text-editor']);
+      show('section-api-v2',             f['api-v2']);
+
+      // ai assistant
+      const ai = document.getElementById('section-ai-assistant');
+      if (ai) {
+        ai.classList.toggle('hidden', f['ai-assistant'] !== true);
+        ai.classList.toggle('flex', f['ai-assistant'] === true);
+      }
+
+      updateLegend(f);
+    }
+
+    function updateLegend(f) {
+      const list    = document.getElementById('legend-list');
+      const trigger = document.getElementById('legend-trigger-text');
+      const entries = Object.entries(f);
+
+      if (!entries.length) {
+        if (trigger) trigger.textContent = 'No active overrides';
+        if (list) list.innerHTML = '<div class="text-xs text-gray-400 dark:text-brand-muted italic">No overrides yet. Open the extension panel to get started.</div>';
+        return;
+      }
+
+      if (trigger) trigger.textContent = entries.length + ' override' + (entries.length !== 1 ? 's' : '') + ' active';
+      if (list) {
+        list.innerHTML = entries.map(([key, val]) => `
+          <div class="flex items-center gap-2 py-0.5">
+            <span class="w-1.5 h-1.5 rounded-full flex-shrink-0 ${val === true ? 'bg-emerald-500' : 'bg-rose-400'}"></span>
+            <span class="font-mono text-[10px] text-gray-700 dark:text-brand-text flex-1 truncate">${key}</span>
+            <span class="text-[9px] font-bold ${val === true ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-500 dark:text-rose-400'}">${val === true ? 'ON' : 'OFF'}</span>
+          </div>
+        `).join('');
+      }
+    }
+
+    function toggleLegend() {
+      legendOpen = !legendOpen;
+      const panel = document.getElementById('legend-panel');
+      if (panel) panel.classList.toggle('hidden', !legendOpen);
+    }
+
+    // Apply on load
+    applyFlags();
+
+    // Real-time: extension dispatches this after every save
+    window.addEventListener('flags:updated', applyFlags);
+
+    // Cross-tab: storage event fires when another context writes
+    window.addEventListener('storage', (e) => {
+      if (e.key === OVERRIDES_KEY) applyFlags();
+    });
+  </script>
+</body>
+</html>
