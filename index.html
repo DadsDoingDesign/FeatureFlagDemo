@@ -481,7 +481,7 @@
       Override flags to preview different states. Changes apply instantly — no reload needed.
     </div>
 
-    <div class="ft-presets">
+    <div class="ft-presets" id="ft-presets">
       <span class="ft-preset-label">Preset:</span>
       <button class="ft-preset-btn" data-preset="Free Tier">Free Tier</button>
       <button class="ft-preset-btn" data-preset="Pro Tier">Pro Tier</button>
@@ -781,7 +781,7 @@
         const fk = Object.keys(flags);
         if (fk.length === oKeys.length && fk.every(k => overrides[k] === flags[k])) { active = name; break; }
       }
-      document.querySelectorAll('#ft-presets .ft-preset-btn').forEach(b => {
+      document.querySelectorAll('.ft-preset-btn').forEach(b => {
         b.classList.toggle('active', b.dataset.preset === active);
       });
     }
